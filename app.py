@@ -11,15 +11,15 @@ DB_PASSWORD = os.getenv('DB_PASSWORD')
 DB_HOST = os.getenv('DB_HOST')
 DB_NAME = os.getenv('DB_NAME')
 
-config = {
-    'user': DB_USERNAME,
-    'password': DB_PASSWORD,
-    'host': DB_HOST,
-    'database': DB_NAME
-}
+
 
 try:
-    conn = mysql.connect(**config)
+    conn = mysql.connect(
+        host=DB_HOST,
+        database=DB_NAME,
+        user=DB_USERNAME,
+        password=DB_PASSWORD
+    )
     print("Successfully connected to database")
 except Error as e:
     print("Error while connecting to database", e)
