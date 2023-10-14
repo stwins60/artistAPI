@@ -1,5 +1,5 @@
 flask
 gunicorn
-mysql-connector
+mysql-connector-python
 python-dotenv
 waitress
