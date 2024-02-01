@@ -26,6 +26,11 @@ DB_NAME = os.getenv('DB_NAME')
 
 app = Flask(__name__)
 
+
+@app.route('/')
+def home():
+    return "Welcome to Artist API"
+
 @app.route('/api/v1/artists')
 def get_artists():
     conn = mysql.connect(
