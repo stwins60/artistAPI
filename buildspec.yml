@@ -1,0 +1,27 @@
+
+phases:
+  variables:
+    AWS_DEFAULT_REGION: "us-east-1"
+    AWS_ACCOUNT_ID: "269629789070"
+    REPOSITORY_URI: "269629789070.dkr.ecr.us-east-1.amazonaws.com/devops-fullstack-demo"
+  pre_build:
+    commands:
+      - echo "Logging in to Amazon ECR In Dev Account"
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 269629789070.dkr.ecr.us-east-1.amazonaws.com/devops-fullstack-demo
+  build:
+    commands:
+      - echo "Building the Docker image"
+      - docker build -t $REPOSITORY_URI:latest .
+      - echo "Pushing the Docker image to ECR"
+      - docker push $REPOSITORY_URI:latest
+
+  post_build:
+    commands:
+      - echo "Deploying the Docker image to ECS"
+      - aws ecs update-service --cluster devops-fullstack-cluster --service devops-fullstack-service --force-new-deployment
+      - echo "Generating Artifact"
+      - printf '[{"name":"devops-fullstack-container","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+
+artifacts:
+  files:
+    - imagedefinitions.json
